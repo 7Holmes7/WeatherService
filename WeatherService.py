@@ -1,5 +1,6 @@
 from typing import Optional
 from pyowm import OWM
+from pyowm.weatherapi25.observation import Observation
 from pyowm.commons.enums import SubscriptionTypeEnum
 
 # openweathermap.org token
@@ -10,8 +11,8 @@ class WeatherService:
 
     def __init__(self, token: Optional[str] = None):
         # self._session = Session()
-        self._token = token if token else RESOURCE_KEY
-        self._manager = None
+        self._token: str = token if token else RESOURCE_KEY
+        self._manager: Optional[Observation] = None
 
     def _initManagerByCity(self, city: str):
         config = {
@@ -47,8 +48,60 @@ class WeatherService:
         location = self._manager.location
         return dict(name=location.name, country=location.country.lower())
 
-    def analyzeWeather(self, weather: dict):
-        pass
+    @staticmethod
+    def analyzeWeather(weather: dict) -> str:
+
+        clothes = {'head': None,
+                   'torso': None,
+                   'hands': None,
+                   'legs': None,
+                   'accessory': None}
+
+        temperature = weather.get('temperature')
+
+        if temperature < -15:
+            clothes['head'] = "Меховая шапка"
+            clothes['torso'] = "Тулуп"
+            clothes['hands'] = "Варежки"
+            clothes['legs'] = "Валенки"
+            clothes['accessory'] = "Портативный обогреватель"
+        elif temperature in range(-15, 1):
+            clothes['head'] = "Шапка"
+            clothes['torso'] = "Куртка"
+            clothes['hands'] = "Перчатки"
+            clothes['legs'] = "Утепленные ботинки"
+            clothes['accessory'] = "Шарф"
+        elif temperature in range(1, 15):
+            clothes['torso'] = "Пальто"
+            clothes['legs'] = "Джинсы"
+        elif temperature in range(15, 25):
+            clothes['torso'] = "Толстовка"
+            clothes['legs'] = "Джинсы"
+            clothes['accessory'] = "Кроссовки"
+        else:
+            clothes['head'] = "Кепка"
+            clothes['torso'] = "Майка"
+            clothes['legs'] = "Шорты"
+
+        if "дождь" in weather.get('status'):
+            clothes['accessory'] = "Зонт"
+
+        recommendation = "Рекомендуем взять следующие вещи: "
+        for element in clothes.values():
+            if element:
+                recommendation += f"{element},"
+        return recommendation[:-1]
 
     def __repr__(self):
         return "This is service object"
+
+
+if __name__ == "__main__":
+    # from app import API_KEY
+    #
+    # service = WeatherService(API_KEY)
+    # weather = service.getCurrentWeatherByCity('Гренландия')
+    # print(weather)
+    # message = service.analyzeWeather(weather)
+    # print(message)
+    pass

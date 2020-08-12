@@ -6,6 +6,7 @@
             <h3>{{ weather.temperature }} <span class="symbol">°</span>C  <img  width="128" height="128"src="https://openweathermap.org/img/wn/{{weather.icon}}@2x.png"></h3>
             <p> <span>{{location.name}} <img src="https://www.countryflags.io/{{ location.country }}/shiny/32.png"> </span> </p>
             <p> {{ weather.status }} </p>
+            <p> {{ message }} </p>
             <h5>Давление: {{ weather.pressure }}hPa</h5>
             <h5>Влажность: {{ weather.humidity }}%</h5>
             <h5>Ветер: {{ weather.wind }} m/s</h5>

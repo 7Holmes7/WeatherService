@@ -23,6 +23,9 @@ def getWeather():
         except NotFoundError:
             flash("Город не найден")
             return redirect(url_for('getWeather'))
+        except Exception as e:
+            flash(f"Unknown Exception: {str(e)}")
+            return redirect(url_for('getWeather'))
         return render_template('result.html', weather=weather, location=location, message=message)
     return render_template('search.html', form=form)
 
